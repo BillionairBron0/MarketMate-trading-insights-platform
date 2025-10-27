@@ -1,58 +1,49 @@
-import { Tabs } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+
+import React from 'react';
+import { Tabs } from 'expo-router';
+import { FontAwesome } from '@expo/vector-icons';
+import { useSubscription } from '../../contexts/SubscriptionContext';
 
 export default function TabLayout() {
+  const { isPro } = useSubscription();
+
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: "#00ff88",
-        tabBarInactiveTintColor: "#666666",
-        tabBarStyle: {
-          backgroundColor: "#1a1a1a",
-          borderTopColor: "#333333",
-          height: 60,
-          paddingBottom: 8,
-        },
-        headerStyle: {
-          backgroundColor: "#1a1a1a",
-        },
-        headerTintColor: "#ffffff",
-      }}
-    >
+    <Tabs>
       <Tabs.Screen
         name="index"
         options={{
-          title: "Analytics",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="analytics" size={size} color={color} />
-          ),
+          title: 'Home',
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />,
         }}
       />
       <Tabs.Screen
         name="trading"
         options={{
-          title: "Trading",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="trending-up" size={size} color={color} />
-          ),
+          title: 'Trading',
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="exchange" color={color} />,
         }}
       />
+      {isPro && (
+        <Tabs.Screen
+          name="portfolio"
+          options={{
+            title: 'Portfolio',
+            tabBarIcon: ({ color }) => <FontAwesome size={28} name="pie-chart" color={color} />,
+          }}
+        />
+      )}
       <Tabs.Screen
         name="news"
         options={{
-          title: "News",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="newspaper" size={size} color={color} />
-          ),
+          title: 'News',
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="newspaper-o" color={color} />,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: "Settings",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings" size={size} color={color} />
-          ),
+          title: 'Settings',
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="cog" color={color} />,
         }}
       />
     </Tabs>

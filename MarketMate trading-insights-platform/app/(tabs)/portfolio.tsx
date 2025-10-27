@@ -2,10 +2,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function TradingScreen() {
+export default function PortfolioScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Trading</Text>
+      <Text style={styles.title}>Portfolio</Text>
     </View>
   );
 }

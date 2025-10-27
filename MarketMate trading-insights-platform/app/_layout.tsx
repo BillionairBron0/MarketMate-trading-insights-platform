@@ -1,15 +1,15 @@
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+
+import React from 'react';
+import { Stack } from 'expo-router';
+import { SubscriptionProvider } from '../contexts/SubscriptionContext';
 
 export default function RootLayout() {
   return (
-    <SafeAreaProvider>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
+    <SubscriptionProvider>
+      <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="subscription" options={{ title: 'MarketMate Pro' }} />
       </Stack>
-      <StatusBar style="auto" />
-    </SafeAreaProvider>
+    </SubscriptionProvider>
   );
 }
