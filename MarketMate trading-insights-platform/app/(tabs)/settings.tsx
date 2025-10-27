@@ -1,9 +1,8 @@
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Switch, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import SettingsCard from '../../components/SettingsCard';
 import { useSubscription } from '../../contexts/SubscriptionContext';
-import { Link } from 'expo-router';
 
 export default function SettingsScreen() {
   const { isPro, setIsPro } = useSubscription();
@@ -19,31 +18,29 @@ export default function SettingsScreen() {
         <Text style={styles.sectionTitle}>Account</Text>
         <SettingsCard
           title="Premium Subscription"
-          subtitle={isPro ? 'Manage your subscription' : 'Access exclusive features & real-time data'}
-          isPro={isPro}
+          description={isPro ? 'Manage your subscription' : 'Access exclusive features & real-time data'}
           onPress={() => !isPro && setIsPro(true)}
+          icon="star"
+          rightElement="text"
+          rightText={isPro ? "PRO" : "Upgrade"}
         />
-        <SettingsCard title="GoMode Access" subtitle="Advanced security features (Protected)" />
+        <SettingsCard title="GoMode Access" description="Advanced security features (Protected)" icon="shield-checkmark" />
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Trading</Text>
-        <SettingsCard title="Broker Connections" subtitle="Connect to your broker worldwide" />
+        <SettingsCard title="Broker Connections" description="Connect to your broker worldwide" icon="swap-horizontal" />
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Risk Management</Text>
         <SettingsCard
           title="Auto Refresh"
-          subtitle="Automatically refresh market data"
-          toggle={
-            <Switch
-              value={autoRefresh}
-              onValueChange={setAutoRefresh}
-              trackColor={{ false: '#767577', true: '#81b0ff' }}
-              thumbColor={autoRefresh ? '#f5dd4b' : '#f4f3f4'}
-            />
-          }
+          description="Automatically refresh market data"
+          icon="refresh-circle"
+          rightElement="switch"
+          switchValue={autoRefresh}
+          onSwitchChange={setAutoRefresh}
         />
       </View>
 
@@ -51,39 +48,31 @@ export default function SettingsScreen() {
         <Text style={styles.sectionTitle}>Preferences</Text>
         <SettingsCard
           title="Notifications"
-          subtitle="Price alerts and market updates"
-          toggle={
-            <Switch
-              value={notifications}
-              onValueChange={setNotifications}
-              trackColor={{ false: '#767577', true: '#81b0ff' }}
-              thumbColor={notifications ? '#f5dd4b' : '#f4f3f4'}
-            />
-          }
+          description="Price alerts and market updates"
+          icon="notifications"
+          rightElement="switch"
+          switchValue={notifications}
+          onSwitchChange={setNotifications}
         />
         <SettingsCard
           title="Dark Mode"
-          subtitle="Professional dark interface"
-          toggle={
-            <Switch
-              value={darkMode}
-              onValueChange={setDarkMode}
-              trackColor={{ false: '#767577', true: '#81b0ff' }}
-              thumbColor={darkMode ? '#f5dd4b' : '#f4f3f4'}
-            />
-          }
+          description="Professional dark interface"
+          icon="moon"
+          rightElement="switch"
+          switchValue={darkMode}
+          onSwitchChange={setDarkMode}
         />
-        <SettingsCard title="Data Source" subtitle="Configure market data providers" />
+        <SettingsCard title="Data Source" description="Configure market data providers" icon="analytics" />
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Support</Text>
-        <SettingsCard title="Help & Support" subtitle="Get in-touch with the platform" />
+        <SettingsCard title="Help & Support" description="Get in-touch with the platform" icon="help-buoy" />
       </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>About</Text>
-        <SettingsCard title="About" subtitle="App Version 1.0.0" />
+        <SettingsCard title="About" description="App Version 1.0.0" icon="information-circle" />
       </View>
     </ScrollView>
   );
