@@ -1,6 +1,14 @@
-import { View, Text, StyleSheet, ScrollView, RefreshControl } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+  TouchableOpacity,
+} from "react-native";
 import { useState } from "react";
 import NewsCard from "../../components/NewsCard";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function NewsTab() {
   const [refreshing, setRefreshing] = useState(false);
@@ -14,7 +22,8 @@ export default function NewsTab() {
   const newsData = [
     {
       title: "Apple Reports Strong Q4 Earnings, iPhone Sales Surge",
-      summary: "Apple Inc. exceeded analyst expectations with robust iPhone sales driving revenue growth. The company reported record quarterly revenue of $89.5 billion.",
+      summary:
+        "Apple Inc. exceeded analyst expectations with robust iPhone sales driving revenue growth. The company reported record quarterly revenue of $89.5 billion.",
       source: "MarketWatch",
       timestamp: "2 hours ago",
       sentiment: "bullish" as const,
@@ -22,7 +31,8 @@ export default function NewsTab() {
     },
     {
       title: "Tesla Stock Drops on Production Concerns",
-      summary: "Tesla shares fell 3% in pre-market trading after reports of production delays at the Austin facility. Analysts remain cautiously optimistic.",
+      summary:
+        "Tesla shares fell 3% in pre-market trading after reports of production delays at the Austin facility. Analysts remain cautiously optimistic.",
       source: "Reuters",
       timestamp: "4 hours ago",
       sentiment: "bearish" as const,
@@ -30,7 +40,8 @@ export default function NewsTab() {
     },
     {
       title: "NVIDIA AI Chip Demand Continues to Soar",
-      summary: "Strong demand for AI chips pushes NVIDIA to new highs. The company's data center revenue grew 200% year-over-year, signaling continued AI boom.",
+      summary:
+        "Strong demand for AI chips pushes NVIDIA to new highs. The company\'s data center revenue grew 200% year-over-year, signaling continued AI boom.",
       source: "Bloomberg",
       timestamp: "6 hours ago",
       sentiment: "bullish" as const,
@@ -38,7 +49,8 @@ export default function NewsTab() {
     },
     {
       title: "Federal Reserve Signals Potential Rate Cuts",
-      summary: "Fed officials hint at possible interest rate reductions in upcoming meetings, citing cooling inflation data and economic stability concerns.",
+      summary:
+        "Fed officials hint at possible interest rate reductions in upcoming meetings, citing cooling inflation data and economic stability concerns.",
       source: "CNBC",
       timestamp: "8 hours ago",
       sentiment: "neutral" as const,
@@ -46,7 +58,8 @@ export default function NewsTab() {
     },
     {
       title: "Microsoft Azure Growth Accelerates",
-      summary: "Microsoft's cloud computing division shows accelerated growth with Azure revenue up 35% year-over-year, beating analyst expectations significantly.",
+      summary:
+        "Microsoft\'s cloud computing division shows accelerated growth with Azure revenue up 35% year-over-year, beating analyst expectations significantly.",
       source: "TechCrunch",
       timestamp: "10 hours ago",
       sentiment: "bullish" as const,
@@ -54,16 +67,67 @@ export default function NewsTab() {
     },
   ];
 
+  const sentimentDistribution = {
+    bullish: 60,
+    bearish: 25,
+    neutral: 15,
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView
         style={styles.scrollView}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#ffffff"
+          />
         }
       >
-        <Text style={styles.title}>Market News</Text>
-        <Text style={styles.subtitle}>Real-time financial news with AI sentiment analysis</Text>
+        <View style={styles.header}>
+          <Text style={styles.title}>Market News</Text>
+          <Text style={styles.subtitle}>
+            AI-powered sentiment analysis for an edge in the market
+          </Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Market Sentiment</Text>
+          <View style={styles.sentimentContainer}>
+            <View style={styles.sentimentBar}>
+              <View
+                style={[
+                  styles.sentimentSegment,
+                  { flex: sentimentDistribution.bullish, backgroundColor: "#00ff88" },
+                ]}
+              />
+              <View
+                style={[
+                  styles.sentimentSegment,
+                  { flex: sentimentDistribution.bearish, backgroundColor: "#ff4444" },
+                ]}
+              />
+              <View
+                style={[
+                  styles.sentimentSegment,
+                  { flex: sentimentDistribution.neutral, backgroundColor: "#888888" },
+                ]}
+              />
+            </View>
+            <View style={styles.sentimentLabels}>
+              <Text style={styles.sentimentLabel}>
+                <Ionicons name="ellipse" size={10} color="#00ff88" /> Bullish: {sentimentDistribution.bullish}%
+              </Text>
+              <Text style={styles.sentimentLabel}>
+                <Ionicons name="ellipse" size={10} color="#ff4444" /> Bearish: {sentimentDistribution.bearish}%
+              </Text>
+              <Text style={styles.sentimentLabel}>
+                <Ionicons name="ellipse" size={10} color="#888888" /> Neutral: {sentimentDistribution.neutral}%
+              </Text>
+            </View>
+          </View>
+        </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Latest Headlines</Text>
@@ -79,24 +143,6 @@ export default function NewsTab() {
             />
           ))}
         </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Market Sentiment</Text>
-          <View style={styles.sentimentCard}>
-            <View style={styles.sentimentRow}>
-              <Text style={styles.sentimentLabel}>📈 Bullish: </Text>
-              <Text style={styles.bullishText}>60%</Text>
-            </View>
-            <View style={styles.sentimentRow}>
-              <Text style={styles.sentimentLabel}>📉 Bearish: </Text>
-              <Text style={styles.bearishText}>25%</Text>
-            </View>
-            <View style={styles.sentimentRow}>
-              <Text style={styles.sentimentLabel}>➖ Neutral: </Text>
-              <Text style={styles.neutralText}>15%</Text>
-            </View>
-          </View>
-        </View>
       </ScrollView>
     </View>
   );
@@ -109,58 +155,56 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    padding: 16,
+  },
+  header: {
+    padding: 24,
+    backgroundColor: "#1a1a1a",
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
   },
   title: {
-    fontSize: 28,
+    fontSize: 36,
     fontWeight: "bold",
     color: "#ffffff",
-    marginBottom: 4,
+    textAlign: "center",
   },
   subtitle: {
     fontSize: 16,
     color: "#888888",
-    marginBottom: 24,
+    textAlign: "center",
+    marginTop: 4,
   },
   section: {
-    marginBottom: 24,
+    padding: 24,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: "600",
+    fontSize: 22,
+    fontWeight: "700",
     color: "#ffffff",
+    marginBottom: 20,
+  },
+  sentimentContainer: {
+    backgroundColor: "#1a1a1a",
+    borderRadius: 16,
+    padding: 20,
+  },
+  sentimentBar: {
+    flexDirection: "row",
+    height: 12,
+    borderRadius: 6,
+    overflow: "hidden",
     marginBottom: 16,
   },
-  sentimentCard: {
-    backgroundColor: "#2a2a2a",
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#333333",
+  sentimentSegment: {
+    height: "100%",
   },
-  sentimentRow: {
+  sentimentLabels: {
     flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
+    justifyContent: "space-around",
   },
   sentimentLabel: {
     color: "#ffffff",
-    fontSize: 14,
-    flex: 1,
-  },
-  bullishText: {
-    color: "#00ff88",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  bearishText: {
-    color: "#ff4444",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  neutralText: {
-    color: "#888888",
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: "600",
   },
 });

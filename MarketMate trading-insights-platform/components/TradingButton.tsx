@@ -1,4 +1,11 @@
-import { TouchableOpacity, Text, StyleSheet, ViewStyle } from "react-native";
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  ViewStyle,
+  Animated,
+} from "react-native";
+import { useRef } from "react";
 
 interface TradingButtonProps {
   title: string;
@@ -15,6 +22,8 @@ export default function TradingButton({
   style,
   disabled = false,
 }: TradingButtonProps) {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
   const getButtonStyle = () => {
     switch (variant) {
       case "buy":
@@ -37,28 +46,44 @@ export default function TradingButton({
     }
   };
 
+  const handlePressIn = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 0.98,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start();
+  };
+
   return (
-    <TouchableOpacity
-      style={[
-        getButtonStyle(),
-        disabled && styles.disabled,
-      ]}
-      onPress={onPress}
-      disabled={disabled}
-    >
-      <Text style={getTextStyle()}>{title}</Text>
-    </TouchableOpacity>
+    <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+      <TouchableOpacity
+        style={[getButtonStyle(), disabled && styles.disabled]}
+        onPress={onPress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        disabled={disabled}
+        activeOpacity={0.8}
+      >
+        <Text style={getTextStyle()}>{title}</Text>
+      </TouchableOpacity>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    paddingVertical: 12,
+    paddingVertical: 16,
     paddingHorizontal: 24,
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
-    minHeight: 48,
+    minHeight: 56,
   },
   primaryButton: {
     backgroundColor: "#00ff88",
@@ -70,17 +95,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#ff4444",
   },
   secondaryButton: {
-    backgroundColor: "transparent",
+    backgroundColor: "#2a2a2a",
     borderWidth: 1,
-    borderColor: "#666666",
+    borderColor: "#333333",
   },
   disabled: {
     opacity: 0.5,
   },
   text: {
-    color: "#000000",
-    fontSize: 16,
-    fontWeight: "600",
+    color: "#0a0a0a",
+    fontSize: 18,
+    fontWeight: "bold",
   },
   secondaryText: {
     color: "#ffffff",

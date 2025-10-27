@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, Linking } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface NewsCardProps {
   title: string;
@@ -18,27 +19,30 @@ export default function NewsCard({
   sentiment = "neutral",
   url,
 }: NewsCardProps) {
-  const getSentimentColor = () => {
+  const getSentimentConfig = () => {
     switch (sentiment) {
       case "bullish":
-        return "#00ff88";
+        return {
+          color: "#00ff88",
+          icon: "trending-up",
+          gradient: ["#00331a", "#0a0a0a"],
+        };
       case "bearish":
-        return "#ff4444";
+        return {
+          color: "#ff4444",
+          icon: "trending-down",
+          gradient: ["#330000", "#0a0a0a"],
+        };
       default:
-        return "#888888";
+        return {
+          color: "#888888",
+          icon: "remove",
+          gradient: ["#2a2a2a", "#1a1a1a"],
+        };
     }
   };
 
-  const getSentimentIcon = () => {
-    switch (sentiment) {
-      case "bullish":
-        return "trending-up";
-      case "bearish":
-        return "trending-down";
-      default:
-        return "remove";
-    }
-  };
+  const sentimentConfig = getSentimentConfig();
 
   const handlePress = () => {
     if (url) {
@@ -47,48 +51,48 @@ export default function NewsCard({
   };
 
   return (
-    <TouchableOpacity style={styles.container} onPress={handlePress}>
-      <View style={styles.header}>
-        <View style={styles.sourceContainer}>
-          <Text style={styles.source}>{source}</Text>
-          <Text style={styles.timestamp}>{timestamp}</Text>
+    <TouchableOpacity onPress={handlePress}>
+      <LinearGradient colors={sentimentConfig.gradient} style={styles.container}>
+        <View style={styles.header}>
+          <View style={styles.sourceContainer}>
+            <Text style={styles.source}>{source}</Text>
+            <Text style={styles.timestamp}>{timestamp}</Text>
+          </View>
+          <View
+            style={[
+              styles.sentimentBadge,
+              { backgroundColor: sentimentConfig.color + "30" },
+            ]}
+          >
+            <Ionicons
+              name={sentimentConfig.icon as any}
+              size={14}
+              color={sentimentConfig.color}
+            />
+            <Text style={[styles.sentimentText, { color: sentimentConfig.color }]}>
+              {sentiment.toUpperCase()}
+            </Text>
+          </View>
         </View>
-        <View style={[styles.sentimentBadge, { backgroundColor: getSentimentColor() + "20" }]}>
-          <Ionicons
-            name={getSentimentIcon()}
-            size={12}
-            color={getSentimentColor()}
-          />
-          <Text style={[styles.sentimentText, { color: getSentimentColor() }]}>
-            {sentiment.toUpperCase()}
-          </Text>
-        </View>
-      </View>
 
-      <Text style={styles.title} numberOfLines={2}>
-        {title}
-      </Text>
+        <Text style={styles.title} numberOfLines={2}>
+          {title}
+        </Text>
 
-      <Text style={styles.summary} numberOfLines={3}>
-        {summary}
-      </Text>
-
-      <View style={styles.footer}>
-        <Ionicons name="open-outline" size={14} color="#666666" />
-        <Text style={styles.readMore}>Read more</Text>
-      </View>
+        <Text style={styles.summary} numberOfLines={3}>
+          {summary}
+        </Text>
+      </LinearGradient>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#2a2a2a",
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: "#333333",
+    borderRadius: 16,
+    marginBottom: 16,
+    padding: 20,
+    overflow: "hidden",
   },
   header: {
     flexDirection: "row",
@@ -100,47 +104,37 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   source: {
-    color: "#00ff88",
-    fontSize: 12,
-    fontWeight: "600",
+    color: "#ffffff",
+    fontSize: 14,
+    fontWeight: "bold",
   },
   timestamp: {
-    color: "#666666",
-    fontSize: 11,
+    color: "#888888",
+    fontSize: 12,
     marginTop: 2,
   },
   sentimentBadge: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
   sentimentText: {
-    fontSize: 10,
-    fontWeight: "600",
-    marginLeft: 4,
+    fontSize: 12,
+    fontWeight: "bold",
+    marginLeft: 6,
   },
   title: {
     color: "#ffffff",
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "600",
-    lineHeight: 22,
+    lineHeight: 24,
     marginBottom: 8,
   },
   summary: {
     color: "#cccccc",
     fontSize: 14,
     lineHeight: 20,
-    marginBottom: 12,
-  },
-  footer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  readMore: {
-    color: "#666666",
-    fontSize: 12,
-    marginLeft: 4,
   },
 });

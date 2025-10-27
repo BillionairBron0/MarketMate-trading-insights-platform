@@ -1,109 +1,154 @@
-import { View, Text, StyleSheet, ScrollView, TextInput, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TextInput,
+  Alert,
+  TouchableOpacity,
+} from "react-native";
 import { useState } from "react";
 import TradingButton from "../../components/TradingButton";
-import MarketCard from "../../components/MarketCard";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function TradingTab() {
-  const [selectedSymbol, setSelectedSymbol] = useState("AAPL");
+  const [orderType, setOrderType] = useState("market"); // market, limit, stop
+  const [symbol, setSymbol] = useState("AAPL");
   const [quantity, setQuantity] = useState("100");
-  const [price, setPrice] = useState("185.50");
+  const [limitPrice, setLimitPrice] = useState("185.50");
+  const [stopPrice, setStopPrice] = useState("180.00");
 
-  const handleBuy = () => {
+  const handlePlaceOrder = (side: "buy" | "sell") => {
+    const orderDetails = `Side: ${side.toUpperCase()}\nSymbol: ${symbol}\nQuantity: ${quantity}\nOrder Type: ${orderType.toUpperCase()}`;
+    const priceDetails = orderType === "limit" ? `\nLimit Price: $${limitPrice}` : orderType === "stop" ? `\nStop Price: $${stopPrice}` : "";
+
     Alert.alert(
-      "Buy Order",
-      `Buy ${quantity} shares of ${selectedSymbol} at $${price}?`,
+      `Confirm ${side.toUpperCase()} Order`,
+      `${orderDetails}${priceDetails}`,
       [
         { text: "Cancel", style: "cancel" },
-        { text: "Confirm", onPress: () => console.log("Buy order placed") },
+        { text: "Confirm", onPress: () => console.log(`${side} order placed`) },
       ]
     );
   };
 
-  const handleSell = () => {
-    Alert.alert(
-      "Sell Order",
-      `Sell ${quantity} shares of ${selectedSymbol} at $${price}?`,
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Confirm", onPress: () => console.log("Sell order placed") },
-      ]
-    );
+  const renderOrderTypeFields = () => {
+    if (orderType === "limit") {
+      return (
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Limit Price</Text>
+          <TextInput
+            style={styles.input}
+            value={limitPrice}
+            onChangeText={setLimitPrice}
+            placeholder="Enter limit price"
+            placeholderTextColor="#666666"
+            keyboardType="numeric"
+          />
+        </View>
+      );
+    } else if (orderType === "stop") {
+      return (
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputLabel}>Stop Price</Text>
+          <TextInput
+            style={styles.input}
+            value={stopPrice}
+            onChangeText={setStopPrice}
+            placeholder="Enter stop price"
+            placeholderTextColor="#666666"
+            keyboardType="numeric"
+          />
+        </View>
+      );
+    }
+    return null;
   };
 
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView}>
-        <Text style={styles.title}>Trading</Text>
-        <Text style={styles.subtitle}>Execute trades with professional tools</Text>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Quick Trade</Text>
-          
-          <MarketCard
-            symbol={selectedSymbol}
-            price={price}
-            change="+2.45"
-            changePercent="1.34"
-            volume="52.3M"
-          />
-
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Symbol</Text>
-            <TextInput
-              style={styles.input}
-              value={selectedSymbol}
-              onChangeText={setSelectedSymbol}
-              placeholder="Enter symbol"
-              placeholderTextColor="#666666"
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Quantity</Text>
-            <TextInput
-              style={styles.input}
-              value={quantity}
-              onChangeText={setQuantity}
-              placeholder="Enter quantity"
-              placeholderTextColor="#666666"
-              keyboardType="numeric"
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Price</Text>
-            <TextInput
-              style={styles.input}
-              value={price}
-              onChangeText={setPrice}
-              placeholder="Enter price"
-              placeholderTextColor="#666666"
-              keyboardType="numeric"
-            />
-          </View>
-
-          <View style={styles.buttonContainer}>
-            <TradingButton
-              title="BUY"
-              variant="buy"
-              onPress={handleBuy}
-              style={styles.tradeButton}
-            />
-            <TradingButton
-              title="SELL"
-              variant="sell"
-              onPress={handleSell}
-              style={styles.tradeButton}
-            />
-          </View>
+        <View style={styles.header}>
+          <Text style={styles.title}>Trade Terminal</Text>
+          <Text style={styles.subtitle}>Execute trades with precision</Text>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Risk Management</Text>
-          <View style={styles.riskCard}>
-            <Text style={styles.riskText}>💰 Portfolio Value: $125,430</Text>
-            <Text style={styles.riskText}>📊 Day P&L: +$2,340 (+1.9%)</Text>
-            <Text style={styles.riskText}>⚠️ Risk Level: Moderate</Text>
+          <View style={styles.orderTypeSelector}>
+            <TouchableOpacity
+              style={[
+                styles.orderTypeButton,
+                orderType === "market" && styles.orderTypeButtonActive,
+              ]}
+              onPress={() => setOrderType("market")}
+            >
+              <Text style={styles.orderTypeButtonText}>Market</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.orderTypeButton,
+                orderType === "limit" && styles.orderTypeButtonActive,
+              ]}
+              onPress={() => setOrderType("limit")}
+            >
+              <Text style={styles.orderTypeButtonText}>Limit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.orderTypeButton,
+                orderType === "stop" && styles.orderTypeButtonActive,
+              ]}
+              onPress={() => setOrderType("stop")}
+            >
+              <Text style={styles.orderTypeButtonText}>Stop</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.tradeForm}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Symbol</Text>
+              <TextInput
+                style={styles.input}
+                value={symbol}
+                onChangeText={setSymbol}
+                placeholder="e.g., AAPL"
+                placeholderTextColor="#666666"
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Quantity</Text>
+              <TextInput
+                style={styles.input}
+                value={quantity}
+                onChangeText={setQuantity}
+                placeholder="e.g., 100"
+                placeholderTextColor="#666666"
+                keyboardType="numeric"
+              />
+            </View>
+
+            {renderOrderTypeFields()}
+
+            <View style={styles.estimatedCostContainer}>
+              <Text style={styles.estimatedCostLabel}>Estimated Cost</Text>
+              <Text style={styles.estimatedCostValue}>$18,550.00</Text>
+            </View>
+
+            <View style={styles.buttonContainer}>
+              <TradingButton
+                title="BUY"
+                variant="buy"
+                onPress={() => handlePlaceOrder("buy")}
+                style={{ flex: 1, marginRight: 8 }}
+              />
+              <TradingButton
+                title="SELL"
+                variant="sell"
+                onPress={() => handlePlaceOrder("sell")}
+                style={{ flex: 1, marginLeft: 8 }}
+              />
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -118,65 +163,92 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    padding: 16,
+  },
+  header: {
+    padding: 24,
+    backgroundColor: "#1a1a1a",
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
   },
   title: {
-    fontSize: 28,
+    fontSize: 36,
     fontWeight: "bold",
     color: "#ffffff",
-    marginBottom: 4,
+    textAlign: "center",
   },
   subtitle: {
     fontSize: 16,
     color: "#888888",
-    marginBottom: 24,
+    textAlign: "center",
+    marginTop: 4,
   },
   section: {
+    padding: 24,
+  },
+  orderTypeSelector: {
+    flexDirection: "row",
+    backgroundColor: "#1a1a1a",
+    borderRadius: 12,
+    padding: 4,
     marginBottom: 24,
   },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "600",
-    color: "#ffffff",
-    marginBottom: 16,
+  orderTypeButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
   },
-  inputContainer: {
-    marginBottom: 16,
+  orderTypeButtonActive: {
+    backgroundColor: "#00ff88",
   },
-  inputLabel: {
+  orderTypeButtonText: {
     color: "#ffffff",
     fontSize: 14,
+    fontWeight: "bold",
+  },
+  tradeForm: {
+    backgroundColor: "#1a1a1a",
+    borderRadius: 16,
+    padding: 20,
+  },
+  inputContainer: {
+    marginBottom: 20,
+  },
+  inputLabel: {
+    color: "#888888",
+    fontSize: 12,
     marginBottom: 8,
-    fontWeight: "500",
   },
   input: {
-    backgroundColor: "#2a2a2a",
+    backgroundColor: "#0a0a0a",
     borderWidth: 1,
     borderColor: "#333333",
     borderRadius: 8,
-    padding: 12,
+    padding: 14,
     color: "#ffffff",
     fontSize: 16,
+  },
+  estimatedCostContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginVertical: 12,
+    padding: 12,
+    backgroundColor: "#0a0a0a",
+    borderRadius: 8,
+  },
+  estimatedCostLabel: {
+    color: "#888888",
+    fontSize: 14,
+  },
+  estimatedCostValue: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 16,
-  },
-  tradeButton: {
-    flex: 0.48,
-  },
-  riskCard: {
-    backgroundColor: "#2a2a2a",
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#333333",
-  },
-  riskText: {
-    color: "#ffffff",
-    fontSize: 14,
-    marginBottom: 8,
-    lineHeight: 20,
+    marginTop: 20,
   },
 });
