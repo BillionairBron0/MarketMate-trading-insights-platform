@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "MarketMate-trading-insights-platformMarketMate-trading-insights-platform",
-    "slug": "MarketMate-trading-insights-platformMarketMate-trading-insights-platform",
+    "name": "OmniAI Trading Platform",
+    "slug": "trading-insights-platform",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "marketmatetradinginsightsplatformmarketmatetradinginsightsplatform",
+    "scheme": "trading-insights-platform",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "ios": {
       "supportsTablet": true
     },
@@ -37,6 +37,9 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
     }
   }
 }
